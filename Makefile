@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: activate install create-env check format build
+.PHONY: activate install create-env check format build test
 
 install:
 	python3 -m pip install -r requirements.txt
@@ -13,4 +13,8 @@ format:
 	ruff format
 
 build:
+	pip install -q build
 	python3 -m build
+
+test:
+	python3 -m unittest

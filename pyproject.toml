@@ -1,6 +1,18 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
 [project]
-# Support Python 3.10+.
+name = "tictactoe"
+authors = [
+    {name = "Spencer Mullinix", email = "spencermullinix@gmail.com"}
+]
+description = "Tic Tac Toe"
+version = "0.0.1"
+readme = "README.md"
 requires-python = ">=3.10"
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [tool.ruff]
 # Set the maximum line length to 79.
