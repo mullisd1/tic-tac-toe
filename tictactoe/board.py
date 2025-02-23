@@ -18,6 +18,17 @@ class Board:
 		"""
 		return self.turn
 
+	def set_turn(self):
+		"""
+		:info: set correct turn when board is set
+		:return: none
+		"""
+		if self.board.sum() < 0:
+			self.turn = 'O'
+		else:
+			self.turn = 'X'
+		return self.turn
+
 	def validate_pos(self, row: int, col: int) -> bool:
 		"""
 		:info: validates row and column inputs
@@ -133,6 +144,16 @@ class Board:
 			return 'O'
 		return ' '
 
+	def str_to_num(self, p: str) -> str:
+		"""
+		:info: converts string to num
+		:param p: str == X, O
+
+		"""
+		if p == 'X':
+			return -1
+		return 1
+
 	def print_board(
 		self,
 	):
@@ -160,14 +181,67 @@ class Board:
 		print(out)
 
 	def set_board(self, board):
+		self.size = board.shape[0]
 		self.board = board
+		self.set_turn()
 
-	def get_board_str(
-		self,
-	):
-		pass
+	def to_str(self):
+		return self.board.flatten().tostring()
 
-	def get_best_moves(
-		self,
-	):
-		pass
+	def minimax(self, depth, is_maximizing):
+		cur_out = self.check_board()
+		if cur_out == self.turn:
+			return 1
+		elif cur_out == 'Draw':
+			return 0
+		elif cur_out == '-':
+			pass
+		else:
+			return -1
+
+		if is_maximizing:
+			best_score = -np.inf
+			for i in range(self.size):
+				for j in range(self.size):
+					if self.board[i][j] == 0:
+						self.board[i][j] = self.player
+						score = self.minimax(depth + 1, False)
+						self.board[i][j] = 0
+						best_score = max(best_score, score)
+			return best_score
+		else:
+			best_score = np.inf
+			for i in range(self.size):
+				for j in range(self.size):
+					if self.board[i][j] == 0:
+						self.board[i][j] = -1 * self.player
+						score = self.minimax(depth + 1, True)
+						self.board[i][j] = 0
+						best_score = min(best_score, score)
+			return best_score
+
+	def get_moves(self):
+		best_score = -np.inf
+		moves = []
+
+		self.player = self.str_to_num(self.turn)
+
+		for i in range(self.size):
+			for j in range(self.size):
+				if self.board[i][j] == 0:
+					self.board[i][j] = self.player
+					score = self.minimax(0, False)
+					self.board[i][j] = 0
+					if score > best_score:
+						best_score = score
+						moves = [(i, j)]
+					elif score == best_score:
+						moves.append((i, j))
+		return moves
+
+	def get_best_moves(self, board):
+		self.size = board.shape[0]
+		self.board = board
+		self.set_turn()
+
+		return self.get_moves()
