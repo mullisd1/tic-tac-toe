@@ -1,0 +1,5 @@
+ruff # Linter and Formatter
+setuptools
+
+# Deps
+numpy
