@@ -3,4 +3,4 @@ setuptools
 
 # Deps
 numpy
-unittest
+ipykernel

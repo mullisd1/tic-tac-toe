@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: activate install create-env check format build test
+.PHONY: activate install create-env check format build test kernel
 
 install:
 	python3 -m pip install -r requirements.txt
@@ -18,3 +18,6 @@ build:
 
 test:
 	python3 -m unittest
+
+kernel:
+	python -m ipykernel install --user --name tic --display-name "TicTacToe"
