@@ -186,7 +186,7 @@ class Board:
 		self.set_turn()
 
 	def to_str(self):
-		return self.board.flatten().tostring()
+		return np.array2string(self.board.flatten())
 
 	def minimax(self, depth, is_maximizing):
 		cur_out = self.check_board()
