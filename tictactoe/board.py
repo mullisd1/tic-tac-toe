@@ -186,42 +186,49 @@ class Board:
 		self.set_turn()
 
 	def to_str(self):
-		return np.array2string(self.board.flatten())
+		return np.array2string(self.board.astype(int).flatten())
 
 	def minimax(self, depth, is_maximizing):
 		cur_out = self.check_board()
 		if cur_out == self.turn:
-			return 1
+			return 1, depth
 		elif cur_out == 'Draw':
-			return 0
+			return 0, depth
 		elif cur_out == '-':
 			pass
 		else:
-			return -1
+			return -1, depth
 
 		if is_maximizing:
 			best_score = -np.inf
+			best_depth = np.inf
 			for i in range(self.size):
 				for j in range(self.size):
 					if self.board[i][j] == 0:
 						self.board[i][j] = self.player
-						score = self.minimax(depth + 1, False)
+						score, d = self.minimax(depth + 1, False)
 						self.board[i][j] = 0
-						best_score = max(best_score, score)
-			return best_score
+						if score > best_score or (score == best_score and d < best_depth):
+							best_score = score
+							best_depth = d
+			return best_score, best_depth
 		else:
 			best_score = np.inf
+			best_depth = np.inf
 			for i in range(self.size):
 				for j in range(self.size):
 					if self.board[i][j] == 0:
 						self.board[i][j] = -1 * self.player
-						score = self.minimax(depth + 1, True)
+						score, d = self.minimax(depth + 1, True)
 						self.board[i][j] = 0
-						best_score = min(best_score, score)
-			return best_score
+						if score < best_score or (score == best_score and d < best_depth):
+							best_score = score
+							best_depth = d
+			return best_score, best_depth
 
 	def get_moves(self):
 		best_score = -np.inf
+		best_depth = np.inf
 		moves = []
 
 		self.player = self.str_to_num(self.turn)
@@ -230,13 +237,12 @@ class Board:
 			for j in range(self.size):
 				if self.board[i][j] == 0:
 					self.board[i][j] = self.player
-					score = self.minimax(0, False)
+					score, depth = self.minimax(0, False)
 					self.board[i][j] = 0
-					if score > best_score:
+					if score > best_score or (score == best_score and depth < best_depth):
 						best_score = score
+						best_depth = depth
 						moves = [(i, j)]
-					elif score == best_score:
-						moves.append((i, j))
 		return moves
 
 	def get_best_moves(self, board):
